@@ -1,0 +1,752 @@
+/* ==========================================================================
+   THEME TOKEN ARCHITECTURE & SUBJECT STYLING (UI UX PRO MAX & UNSLOP)
+   Primitive -> Semantic -> Component Token Hierarchy
+   ========================================================================== */
+
+/* 1. Default (Matematika Wajib) Semantic Tokens */
+:root,
+[data-theme='matematika-wajib'] {
+  --theme-color: #285bd3;
+  --theme-dark: #1e49b8;
+  --theme-soft: #edf2fe;
+  --theme-border: #cddbf9;
+  --theme-accent: #35745e;
+  --theme-badge-bg: #edf2fe;
+  --theme-badge-text: #1e49b8;
+  --theme-hero-tint: rgba(40, 91, 211, 0.05);
+  --theme-hero-border: rgba(40, 91, 211, 0.16);
+  --blue: #285bd3;
+  --blue-dark: #1e49b8;
+  --soft-blue: #edf2fe;
+  --canvas-tint: #f7f8fa;
+}
+
+/* 2. Sejarah Indonesia Semantic Tokens (Earth, Warm Sepia, Terracotta) */
+[data-theme='sejarah-indonesia'] {
+  --theme-color: #9b4823;
+  --theme-dark: #7a3414;
+  --theme-soft: #fbf3ec;
+  --theme-border: #e8cfbe;
+  --theme-accent: #b38234;
+  --theme-badge-bg: #fbf3ec;
+  --theme-badge-text: #7a3414;
+  --theme-hero-tint: rgba(155, 72, 35, 0.05);
+  --theme-hero-border: rgba(155, 72, 35, 0.16);
+  --blue: #9b4823;
+  --blue-dark: #7a3414;
+  --soft-blue: #fbf3ec;
+  --line: #e8ded4;
+  --canvas: #fcf9f6;
+  --canvas-tint: #fcf9f6;
+}
+
+/* 3. Biologi Semantic Tokens (Laboratory Emerald, Bio Teal, Cyan) */
+[data-theme='biologi'] {
+  --theme-color: #0e7c6b;
+  --theme-dark: #095c4f;
+  --theme-soft: #e8f7f4;
+  --theme-border: #b7e5dc;
+  --theme-accent: #17899f;
+  --theme-badge-bg: #e8f7f4;
+  --theme-badge-text: #095c4f;
+  --theme-hero-tint: rgba(14, 124, 107, 0.05);
+  --theme-hero-border: rgba(14, 124, 107, 0.16);
+  --blue: #0e7c6b;
+  --blue-dark: #095c4f;
+  --soft-blue: #e8f7f4;
+  --line: #d8eae5;
+  --canvas: #f4faf8;
+  --canvas-tint: #f4faf8;
+}
+
+/* 4. Seni Tari Semantic Tokens (Warm Dramatic Terracotta, Crimson, Gold) */
+[data-theme='seni-tari'] {
+  --theme-color: #b83248;
+  --theme-dark: #912034;
+  --theme-soft: #fdf0f2;
+  --theme-border: #f5c4cd;
+  --theme-accent: #c87a1e;
+  --theme-badge-bg: #fdf0f2;
+  --theme-badge-text: #912034;
+  --theme-hero-tint: rgba(184, 50, 72, 0.05);
+  --theme-hero-border: rgba(184, 50, 72, 0.16);
+  --blue: #b83248;
+  --blue-dark: #912034;
+  --soft-blue: #fdf0f2;
+  --line: #eddde0;
+  --canvas: #fdf8f9;
+  --canvas-tint: #fdf8f9;
+}
+
+/* ==========================================================================
+   DARK MODE ADAPTATION (Accessible Contrast, Preserved Subject Personalities)
+   ========================================================================== */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --ink: #e8edf5;
+    --body: #a7b5c8;
+    --muted: #8292a8;
+    --paper: #161e2a;
+    --canvas: #0e141d;
+    --line: #263346;
+    color-scheme: dark;
+  }
+  .site-header {
+    background: #141b26 !important;
+  }
+  .panel,
+  .menu-card,
+  .subject-card,
+  .topic-row,
+  .dialog-window {
+    background: #161e2a;
+    border-color: #263346;
+  }
+  .menu-card-body,
+  .start-body {
+    background: #161e2a;
+  }
+  .option {
+    background: #141b25;
+    border-color: #273549;
+    color: #cbd5e1;
+  }
+  .option:hover {
+    background: #1c2534;
+  }
+  .btn-outline {
+    background: #161e2a;
+    border-color: #2e3d54;
+    color: #e2e8f0;
+  }
+  .btn-outline:hover {
+    background: #1f2b3c;
+  }
+  .text-input,
+  .textarea-input {
+    background: #111722;
+    border-color: #2d3b50;
+    color: #e2e8f0;
+  }
+  .lesson-nav,
+  .history-card,
+  .answer-card,
+  .rubric-item {
+    background: #161e2a;
+    border-color: #263346;
+  }
+  .topic-row:hover {
+    background: #1c2738;
+  }
+  .tab-strip {
+    background: #111722;
+    border-color: #263346;
+  }
+  .tab-strip button:hover {
+    background: #1b2434;
+  }
+  .inline-note {
+    background: #162438;
+    color: #9cb9db;
+  }
+  .inline-tip {
+    background: #2a2215;
+    color: #e2c08d;
+  }
+  .answer-box {
+    background: #12281e;
+    color: #8ed4b1;
+  }
+  .hero {
+    background: #161e2a;
+    border-color: #263346;
+  }
+
+  [data-theme='matematika-wajib'] {
+    --blue: #548cf7;
+    --blue-dark: #74a2f8;
+    --soft-blue: #162540;
+    --theme-color: #548cf7;
+    --theme-dark: #74a2f8;
+    --theme-soft: #162540;
+    --theme-border: #2b4269;
+    --theme-badge-bg: #162540;
+    --theme-badge-text: #96bbff;
+  }
+
+  [data-theme='sejarah-indonesia'] {
+    --blue: #e2855b;
+    --blue-dark: #f09f7b;
+    --soft-blue: #301a11;
+    --theme-color: #e2855b;
+    --theme-dark: #f09f7b;
+    --theme-soft: #301a11;
+    --theme-border: #4d2b1e;
+    --theme-badge-bg: #301a11;
+    --theme-badge-text: #f5b394;
+    --paper: #201a17;
+    --canvas: #15110f;
+    --line: #372a24;
+  }
+  [data-theme='sejarah-indonesia'] .site-header {
+    background: #1a1512 !important;
+  }
+
+  [data-theme='biologi'] {
+    --blue: #2fc4a6;
+    --blue-dark: #50d7bd;
+    --soft-blue: #0f2c25;
+    --theme-color: #2fc4a6;
+    --theme-dark: #50d7bd;
+    --theme-soft: #0f2c25;
+    --theme-border: #1a4f43;
+    --theme-badge-bg: #0f2c25;
+    --theme-badge-text: #7ee2ce;
+    --paper: #14221f;
+    --canvas: #0d1715;
+    --line: #223c36;
+  }
+  [data-theme='biologi'] .site-header {
+    background: #121c1a !important;
+  }
+
+  [data-theme='seni-tari'] {
+    --blue: #ea5b75;
+    --blue-dark: #f57f95;
+    --soft-blue: #32131a;
+    --theme-color: #ea5b75;
+    --theme-dark: #f57f95;
+    --theme-soft: #32131a;
+    --theme-border: #57222d;
+    --theme-badge-bg: #32131a;
+    --theme-badge-text: #f99cb0;
+    --paper: #221519;
+    --canvas: #170f12;
+    --line: #3b242a;
+  }
+  [data-theme='seni-tari'] .site-header {
+    background: #1a1013 !important;
+  }
+}
+
+/* Subject-specific Hero Banners in Light Mode */
+[data-theme='matematika-wajib'] .hero {
+  background-color: #2555ca;
+}
+[data-theme='matematika-wajib'] .hero-btn {
+  color: #1a44a9;
+}
+
+[data-theme='sejarah-indonesia'] .hero {
+  background-color: #8b3c1b;
+}
+[data-theme='sejarah-indonesia'] .hero-btn {
+  color: #8b3c1b;
+}
+
+[data-theme='biologi'] .hero {
+  background-color: #0c6e5e;
+}
+[data-theme='biologi'] .hero-btn {
+  color: #0c6e5e;
+}
+
+[data-theme='seni-tari'] .hero {
+  background-color: #8c2033;
+}
+[data-theme='seni-tari'] .hero-btn {
+  color: #8c2033;
+}
+
+/* ==========================================================================
+   HOMEPAGE SUBJECT PICKER & CARDS
+   One distinctive card per mapel, visual personality, clean contrast
+   ========================================================================== */
+.subject-picker-section {
+  margin-top: 32px;
+  margin-bottom: 40px;
+}
+.subject-picker-heading {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.subject-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+  gap: 22px;
+}
+.subject-card {
+  position: relative;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+  text-decoration: none;
+  color: inherit;
+}
+.subject-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 24px -10px rgba(0, 0, 0, 0.12);
+  border-color: var(--card-accent, var(--blue));
+}
+.subject-card-banner {
+  height: 128px;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+}
+.subject-card-art {
+  position: absolute;
+  right: 12px;
+  bottom: -6px;
+  opacity: 0.92;
+  pointer-events: none;
+  display: flex;
+  align-items: flex-end;
+}
+.subject-card-badge {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(4px);
+  color: var(--card-accent, #333);
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+.subject-card-content {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+.subject-card-content h3 {
+  font-size: 19px;
+  font-weight: 700;
+  margin-bottom: 6px;
+  color: var(--ink);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.subject-card-content p {
+  color: var(--body);
+  font-size: 13px;
+  line-height: 1.55;
+  margin-bottom: 16px;
+  flex: 1;
+}
+.subject-card-stats {
+  display: flex;
+  gap: 16px;
+  padding-top: 14px;
+  border-top: 1px solid var(--line);
+  font-size: 12px;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+.subject-card-stats strong {
+  color: var(--ink);
+  font-weight: 700;
+  margin-right: 4px;
+}
+.subject-card-action {
+  margin-top: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 13px;
+  font-weight: 650;
+  color: var(--card-accent, var(--blue));
+}
+
+/* Specific Card Themes */
+.subject-card[data-subj='matematika-wajib'] {
+  --card-accent: #285bd3;
+}
+.subject-card[data-subj='matematika-wajib'] .subject-card-banner {
+  background: linear-gradient(135deg, #1c4bbf 0%, #3a71e8 100%);
+  color: #fff;
+}
+.subject-card[data-subj='sejarah-indonesia'] {
+  --card-accent: #9b4823;
+}
+.subject-card[data-subj='sejarah-indonesia'] .subject-card-banner {
+  background: linear-gradient(135deg, #7c3417 0%, #ab562c 100%);
+  color: #fff;
+}
+.subject-card[data-subj='biologi'] {
+  --card-accent: #0e7c6b;
+}
+.subject-card[data-subj='biologi'] .subject-card-banner {
+  background: linear-gradient(135deg, #085548 0%, #15937e 100%);
+  color: #fff;
+}
+.subject-card[data-subj='seni-tari'] {
+  --card-accent: #b83248;
+}
+.subject-card[data-subj='seni-tari'] .subject-card-banner {
+  background: linear-gradient(135deg, #8b1e32 0%, #c93d55 100%);
+  color: #fff;
+}
+
+/* ==========================================================================
+   SUBJECT HEADER SWITCHER & BADGE
+   ========================================================================== */
+.subject-badge-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  background: var(--theme-soft);
+  color: var(--theme-color);
+  border: 1px solid var(--theme-border);
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 650;
+  text-decoration: none;
+}
+.subject-badge-pill:hover {
+  background: var(--theme-border);
+}
+.subject-switcher-dropdown {
+  position: relative;
+  display: inline-block;
+}
+.subject-switcher-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  margin-top: 8px;
+  min-width: 230px;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  box-shadow: 0 12px 28px -6px rgba(0, 0, 0, 0.16);
+  padding: 6px;
+  z-index: 50;
+}
+.subject-switcher-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  border-radius: 7px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink);
+  text-decoration: none;
+}
+.subject-switcher-item:hover {
+  background: var(--soft-blue);
+  color: var(--blue);
+}
+.subject-switcher-item.active {
+  background: var(--soft-blue);
+  color: var(--blue);
+}
+
+/* ==========================================================================
+   3D RENDER DECORATIONS FOR SUBJECT HEROS
+   Matching studio 3D aesthetic of Matematika Wajib
+   ========================================================================== */
+.history-circle {
+  border-color: rgba(235, 175, 130, 0.45) !important;
+}
+.biology-circle {
+  border-color: rgba(140, 235, 215, 0.45) !important;
+}
+.dance-circle {
+  border-color: rgba(255, 180, 195, 0.45) !important;
+}
+.subject-card-img {
+  width: 96px;
+  height: 96px;
+  object-fit: contain;
+  filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.28));
+  transform: translateY(6px);
+  pointer-events: none;
+  transition: transform 0.2s ease;
+}
+.subject-card:hover .subject-card-img {
+  transform: translateY(2px) scale(1.05);
+}
+
+/* ==========================================================================
+   LEMBAR PENILAIAN PRAKTIK SENI TARI
+   Criteria, descriptors, and scoring calculator
+   ========================================================================== */
+.practice-sheet {
+  margin-top: 28px;
+}
+.practice-criteria-card {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 16px;
+}
+.practice-criteria-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.practice-criteria-header h3 {
+  font-size: 16px;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.practice-weight-badge {
+  font-size: 12px;
+  font-weight: 700;
+  padding: 3px 9px;
+  border-radius: 999px;
+  background: var(--soft-blue);
+  color: var(--blue);
+}
+.practice-levels-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 10px;
+  margin-top: 12px;
+}
+.practice-level-item {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 12px;
+  font-size: 12px;
+  line-height: 1.5;
+  background: var(--canvas-tint);
+  cursor: pointer;
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+.practice-level-item:hover {
+  border-color: var(--blue);
+}
+.practice-level-item.selected {
+  border-color: var(--blue);
+  background: var(--soft-blue);
+  box-shadow: 0 0 0 1px var(--blue);
+}
+.practice-level-score {
+  font-weight: 700;
+  color: var(--blue);
+  font-size: 13px;
+  margin-bottom: 4px;
+}
+.practice-summary-card {
+  background: var(--paper);
+  border: 2px solid var(--theme-border);
+  border-radius: 12px;
+  padding: 24px;
+  margin-top: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+.practice-score-big {
+  font-size: 38px;
+  font-weight: 800;
+  color: var(--blue);
+  line-height: 1;
+}
+
+/* ==========================================================================
+   MOBILE RESPONSIVENESS OVERRIDES (max-width: 640px)
+   Balanced card proportions, compact padding, no oversized elements
+   ========================================================================== */
+@media (max-width: 640px) {
+  .page-wrap {
+    width: calc(100% - 20px) !important;
+  }
+  .site-header {
+    overflow-x: clip !important;
+  }
+  .header-inner {
+    width: 100% !important;
+    padding-inline: 10px !important;
+    gap: 6px !important;
+    height: 58px !important;
+  }
+  .header-left {
+    gap: 8px !important;
+    min-width: 0 !important;
+    flex-shrink: 1 !important;
+  }
+  .brand {
+    font-size: 15px !important;
+    gap: 5px !important;
+    flex-shrink: 0 !important;
+  }
+  .brand svg {
+    width: 22px !important;
+    height: 22px !important;
+  }
+  .subject-badge-pill {
+    padding: 3px 6px !important;
+    font-size: 10px !important;
+    max-width: 100px !important;
+    gap: 3px !important;
+    flex-shrink: 1 !important;
+  }
+  .subject-badge-pill span {
+    max-width: 55px !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+  }
+  .header-tools {
+    gap: 4px !important;
+    flex-shrink: 0 !important;
+  }
+  .profile-btn {
+    font-size: 10.5px !important;
+    padding: 2px 4px 2px 8px !important;
+    gap: 3px !important;
+    min-height: 36px !important;
+  }
+  .profile-name {
+    max-width: 44px !important;
+    font-size: 10.5px !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+  }
+  .mobile-menu.icon-btn {
+    min-width: 36px !important;
+    width: 36px !important;
+    height: 36px !important;
+    padding: 4px !important;
+  }
+
+  /* Subject Picker on Mobile */
+  .subject-picker {
+    margin-bottom: 22px !important;
+  }
+  .subject-picker-heading {
+    margin-bottom: 12px !important;
+    gap: 8px !important;
+  }
+  .subject-picker-heading h2 {
+    font-size: 18px !important;
+    line-height: 1.25 !important;
+  }
+  .subject-picker-heading p {
+    font-size: 12px !important;
+    line-height: 1.4 !important;
+  }
+  .subject-grid {
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+  }
+  .subject-card {
+    border-radius: 12px !important;
+  }
+  .subject-card-banner {
+    height: 74px !important;
+    padding: 10px 14px !important;
+  }
+  .subject-card-badge {
+    font-size: 9.5px !important;
+    padding: 2.5px 8px !important;
+    letter-spacing: 0.3px !important;
+  }
+  .subject-card-art {
+    right: 8px !important;
+    bottom: -4px !important;
+  }
+  .subject-card-img {
+    width: 60px !important;
+    height: 60px !important;
+    transform: translateY(2px) !important;
+  }
+  .subject-card-content {
+    padding: 12px 14px !important;
+  }
+  .subject-card-content h3 {
+    font-size: 15px !important;
+    margin-bottom: 3px !important;
+  }
+  .subject-card-content p {
+    font-size: 11.5px !important;
+    line-height: 1.45 !important;
+    margin-bottom: 8px !important;
+    display: -webkit-box !important;
+    -webkit-line-clamp: 2 !important;
+    -webkit-box-orient: vertical !important;
+    overflow: hidden !important;
+  }
+  .subject-card-stats {
+    gap: 10px !important;
+    padding-top: 8px !important;
+    font-size: 11px !important;
+  }
+  .subject-card-action {
+    margin-top: 8px !important;
+    font-size: 11.5px !important;
+  }
+
+  /* Hero Section on Mobile */
+  .hero {
+    min-height: 220px !important;
+    height: auto !important;
+    border-radius: 14px !important;
+  }
+  .hero-copy {
+    width: 60% !important;
+    padding: 16px 16px !important;
+  }
+  .hero-kicker {
+    font-size: 9px !important;
+    padding: 2px 6px !important;
+  }
+  .hero h2 {
+    font-size: clamp(26px, 7vw, 32px) !important;
+    margin: 8px 0 6px !important;
+    letter-spacing: -1px !important;
+  }
+  .hero-copy > p {
+    font-size: 11px !important;
+    line-height: 1.5 !important;
+  }
+  .hero-actions {
+    margin-top: 12px !important;
+    gap: 8px !important;
+    flex-wrap: wrap !important;
+  }
+  .hero-btn {
+    font-size: 11px !important;
+    min-height: 36px !important;
+    padding: 8px 12px !important;
+  }
+  .hero-actions span {
+    font-size: 10.5px !important;
+  }
+  .hero-art {
+    width: 42% !important;
+    right: 1% !important;
+    top: 6% !important;
+  }
+}

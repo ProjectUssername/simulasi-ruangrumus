@@ -1,0 +1,369 @@
+.learning-layout {
+  display: grid;
+  grid-template-columns: minmax(230px, 26%) minmax(0, 1fr);
+  gap: 24px;
+  align-items: start;
+}
+.lesson-sidebar {
+  padding: 20px 14px;
+  position: sticky;
+  top: 20px;
+}
+.lesson-sidebar > h2 {
+  font-size: 17px;
+  padding: 0 7px;
+}
+.search-field {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  background: #fafbfd;
+  margin: 15px 5px 12px;
+  padding: 0 11px;
+  color: var(--muted);
+}
+.search-field:focus-within {
+  border-color: var(--blue);
+}
+.search-field input {
+  border: 0;
+  min-width: 0;
+  width: 100%;
+  height: 39px;
+  outline: 0;
+  font-size: 12px;
+  background: transparent;
+}
+.lesson-list {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.lesson-list a {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 10px 7px;
+  border: 1px solid transparent;
+  border-radius: 7px;
+  font-size: 12px;
+  font-weight: 550;
+  line-height: 1.5;
+  color: var(--body);
+  min-height: 47px;
+}
+.lesson-list a > svg {
+  margin-left: auto;
+  color: #8f9bab;
+}
+.lesson-list a:hover {
+  background: #f4f6fa;
+}
+.lesson-list .current {
+  background: #edf3ff;
+  border-color: #dae5ff;
+  color: var(--blue);
+}
+.lesson-list .current .lesson-num {
+  background: #dbe7ff;
+  color: #2657c8;
+  border-color: #cbdcff;
+}
+.lesson-num {
+  width: 24px;
+  height: 25px;
+  font-size: 10px;
+  border: 0;
+  flex-shrink: 0;
+}
+.search-empty {
+  padding: 12px;
+  color: var(--muted);
+  font-size: 12px;
+}
+.search-empty button {
+  display: block;
+}
+.mobile-topic-select {
+  display: none;
+}
+.learning-content {
+  min-width: 0;
+}
+.lesson-article,
+.guide-body {
+  padding: 28px 32px;
+}
+.article-topline {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--muted);
+  font-size: 11.5px;
+  margin-bottom: 14px;
+}
+.article-topline > svg:first-child {
+  color: var(--blue);
+}
+.lesson-article > h2,
+.guide-body > h2 {
+  font-size: 27px;
+  letter-spacing: -0.9px;
+  line-height: 1.35;
+}
+.lesson-intro {
+  color: var(--body);
+  line-height: 1.85;
+  font-size: 14px;
+  margin-top: 12px;
+  max-width: 80ch;
+}
+.formula-set {
+  display: grid;
+  gap: 14px;
+  margin: 22px 0;
+}
+.formula-box {
+  padding: 18px 22px;
+  border-radius: 9px;
+  border: 1px solid #dce5f1;
+  background: #f5f8fc;
+}
+.formula-box h3 {
+  font-size: 12px;
+  font-weight: 650;
+  color: #526781;
+  letter-spacing: 0;
+}
+.formula-box .math-display {
+  font-size: 20px;
+  color: #243e68;
+}
+.formula-box p {
+  font-size: 12.5px;
+  line-height: 1.85;
+  color: var(--muted);
+}
+.lesson-actions {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  justify-content: space-between;
+  border-top: 1px solid var(--line);
+  padding-top: 21px;
+  margin-top: 24px;
+  flex-wrap: wrap;
+}
+.next-topic {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  background: white;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  margin-top: 16px;
+  padding: 17px 22px;
+}
+.next-topic:hover {
+  border-color: #c2d3ed;
+}
+.next-topic-icon {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 8px;
+  background: var(--soft-blue);
+  color: var(--blue);
+}
+.next-topic small,
+.next-topic b {
+  display: block;
+}
+.next-topic small {
+  font-size: 10px;
+  color: var(--muted);
+  margin-bottom: 2px;
+}
+.next-topic b {
+  font-size: 13px;
+}
+.next-topic > svg {
+  margin-left: auto;
+  color: var(--blue);
+}
+.example-prompt {
+  padding: 18px 21px;
+  border-left: 3px solid var(--blue);
+  background: #f2f6fe;
+  border-radius: 0 7px 7px 0;
+  margin: 20px 0 22px;
+}
+.example-prompt > p {
+  font-size: 16px;
+  line-height: 1.9;
+  margin-top: 6px;
+  color: #2e405b;
+}
+.example-prompt .small-label {
+  color: var(--blue);
+}
+.subheading {
+  font-size: 16px;
+  letter-spacing: -0.3px;
+}
+.steps-list,
+.strategy-list {
+  list-style: none;
+  padding: 0;
+  margin: 21px 0;
+}
+.steps-list li,
+.strategy-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+.steps-list li + li {
+  margin-top: 20px;
+}
+.step-index {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--soft-blue);
+  color: var(--blue);
+  font-size: 12px;
+  font-weight: 650;
+}
+.steps-list b {
+  font-size: 12px;
+}
+.steps-list p,
+.strategy-list p {
+  color: var(--body);
+  font-size: 13.5px;
+  line-height: 1.85;
+  margin-top: 3px;
+}
+.reveal {
+  animation: reveal 0.18s ease;
+}
+@keyframes reveal {
+  from {
+    opacity: 0;
+    transform: translateY(3px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.content-aside-layout,
+.exam-intro-layout,
+.exam-layout,
+.results-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(260px, 25%);
+  gap: 24px;
+  align-items: start;
+}
+.time-tag {
+  background: #eef2f7;
+  color: #53647b;
+  font-size: 10.5px;
+  padding: 2px 7px;
+}
+.strategy-list {
+  margin: 25px 0 5px;
+}
+.strategy-list li {
+  position: relative;
+  padding-bottom: 23px;
+}
+.strategy-list li:before {
+  content: '';
+  position: absolute;
+  left: 13px;
+  top: 33px;
+  bottom: 3px;
+  width: 1px;
+  background: #dce4f2;
+}
+.strategy-list li:last-child:before {
+  display: none;
+}
+.strategy-list h3 {
+  font-size: 15px;
+  margin-top: 7px;
+}
+.strategy-list p {
+  font-size: 13px;
+  margin-top: 5px;
+}
+.guide-cta {
+  border-top: 1px solid var(--line);
+  padding-top: 18px;
+  margin-top: 12px;
+}
+.guide-accordions {
+  margin: 20px 0;
+}
+.guide-accordions details {
+  border-bottom: 1px solid var(--line);
+}
+details summary {
+  list-style: none;
+}
+details summary::-webkit-details-marker {
+  display: none;
+}
+.guide-accordions summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  min-height: 53px;
+  padding: 14px 0;
+  font-size: 14px;
+  font-weight: 600;
+}
+.guide-accordions details > p {
+  font-size: 13px;
+  color: var(--body);
+  line-height: 1.85;
+  padding: 0 0 18px;
+}
+.guide-accordions summary svg,
+.review-item summary > svg {
+  transition: transform 0.16s;
+}
+details[open] > summary > svg:last-child {
+  transform: rotate(180deg);
+}
+.mistake,
+.correction {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  font-size: 13px;
+  line-height: 1.8;
+  padding: 6px 0;
+}
+.mistake svg,
+.correction svg {
+  margin-top: 3px;
+}
+.mistake {
+  color: #8b5352;
+}
+.correction {
+  color: #426b55;
+  padding-bottom: 16px;
+}

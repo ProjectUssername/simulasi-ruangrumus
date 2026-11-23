@@ -1,0 +1,15 @@
+@import 'tailwindcss' source(none);
+@import './styles/base.css';
+@import './styles/themes.css';
+@import './styles/dashboard.css';
+@import './styles/study.css';
+@import './styles/exam.css';
+@import './styles/responsive.css';
+@import './styles/accessibility.css';
+@source "./";
+@source "../app";
+
+@theme {
+  --font-sans: 'Plus Jakarta Sans', Arial, sans-serif;
+  --color-brand: #285bd3;
+}

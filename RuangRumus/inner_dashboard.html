@@ -1,0 +1,977 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem Pemantauan Kualitas Air - Ekoriparian Unpad Jatinangor</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Chart.js untuk Grafik Tren -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+        }
+        /* Animasi halus untuk transisi modal dan elemen */
+        .fade-in {
+            animation: fadeIn 0.25s ease-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px) scale(0.98); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+    </style>
+</head>
+<body class="text-slate-800 antialiased selection:bg-emerald-500 selection:text-white flex flex-col min-h-screen">
+
+    <!-- Navbar -->
+    <nav class="bg-white/90 backdrop-blur-md border-b border-slate-200 sticky top-0 z-30 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center gap-3">
+                <!-- Logo & Judul -->
+                <div class="flex items-center gap-3">
+                    <div class="bg-emerald-600 text-white p-2.5 rounded-xl shadow-sm shrink-0">
+                        <i data-lucide="droplets" class="w-6 h-6"></i>
+                    </div>
+                    <div>
+                        <h1 class="font-bold text-base sm:text-xl text-slate-900 leading-tight">Ekoriparian Unpad Jatinangor</h1>
+                        <p class="text-xs text-slate-500 hidden sm:block">Sistem Pemantauan Kualitas Air Sungai Cikeruh</p>
+                    </div>
+                </div>
+
+                <!-- Tombol Aksi -->
+                <div class="flex items-center gap-2 sm:gap-3">
+                    <button onclick="openModal()" class="bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white px-3.5 py-2.5 sm:px-4 sm:py-2.5 rounded-xl font-semibold text-xs sm:text-sm flex items-center gap-2 shadow-sm transition-all cursor-pointer">
+                        <i data-lucide="plus-circle" class="w-4 h-4"></i>
+                        <span>Update Data</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Konten Utama -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-6 sm:space-y-8 flex-grow w-full">
+
+        <!-- Banner Informasi Lokasi & Filter Titik Pantau -->
+        <div class="bg-gradient-to-br from-emerald-900 via-emerald-800 to-teal-700 rounded-2xl p-6 sm:p-8 text-white shadow-md flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
+            <div class="space-y-2.5 max-w-2xl">
+                <div class="inline-flex items-center gap-1.5 bg-white/15 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-medium text-emerald-100">
+                    <i data-lucide="map-pin" class="w-3.5 h-3.5"></i>
+                    <span>Kawasan Ekoriparian Universitas Padjadjaran, Jatinangor</span>
+                </div>
+                <h2 class="text-2xl sm:text-3xl font-bold tracking-tight">Status Kualitas Air Terkini</h2>
+                <p class="text-emerald-100 text-sm sm:text-base leading-relaxed">
+                    Pemantauan berkala ekosistem riparian Sungai Cikeruh untuk menjaga kelestarian habitat air, efektivitas fitoremediasi, dan baku mutu lingkungan kampus Unpad.
+                </p>
+            </div>
+
+            <!-- Pemilih Titik Pantau (Stasiun) -->
+            <div class="w-full lg:w-auto bg-white/10 backdrop-blur-md p-4 rounded-2xl border border-white/20 space-y-2 min-w-[280px] sm:min-w-[320px]">
+                <label for="stationFilter" class="block text-xs font-semibold text-emerald-100 uppercase tracking-wider">Pilih Titik Pantau (Stasiun)</label>
+                <div class="relative">
+                    <select id="stationFilter" onchange="handleStationChange()" class="w-full bg-white text-slate-800 font-semibold text-sm rounded-xl px-3.5 py-2.5 pr-9 appearance-none focus:outline-none focus:ring-2 focus:ring-emerald-400 cursor-pointer shadow-sm">
+                        <option value="Stasiun 1 - Hulu (Area Konservasi Unpad)">Stasiun 1 - Hulu (Area Konservasi Unpad)</option>
+                        <option value="Stasiun 2 - Tengah (Zona Edukasi & Fitoremediasi)">Stasiun 2 - Tengah (Zona Edukasi & Fitoremediasi)</option>
+                        <option value="Stasiun 3 - Hilir (Jembatan Cikeruh Jatinangor)">Stasiun 3 - Hilir (Jembatan Cikeruh Jatinangor)</option>
+                    </select>
+                    <i data-lucide="chevron-down" class="w-4 h-4 text-slate-500 absolute right-3 top-3 pointer-events-none"></i>
+                </div>
+                <p id="lastUpdatedText" class="text-xs text-emerald-100 flex items-center gap-1.5 pt-1">
+                    <i data-lucide="clock" class="w-3.5 h-3.5"></i>
+                    <span>Diperbarui: Memuat...</span>
+                </p>
+            </div>
+        </div>
+
+        <!-- Ringkasan Status Utama & Parameter Kunci -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            
+            <!-- Kartu Status IKA (Indeks Kualitas Air) -->
+            <div class="lg:col-span-4 bg-white rounded-2xl p-6 border border-slate-200 shadow-sm flex flex-col justify-between">
+                <div>
+                    <div class="flex items-center justify-between gap-2 mb-4">
+                        <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Status Mutu Air</span>
+                        <span id="statusBadge" class="px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800">
+                            BAIK (Memenuhi Baku Mutu)
+                        </span>
+                    </div>
+                    
+                    <div class="my-4 flex items-baseline gap-3">
+                        <span id="ikaScore" class="text-5xl font-extrabold text-slate-900 tracking-tight">84.5</span>
+                        <span class="text-sm font-medium text-slate-500">/ 100 (Skor IKA)</span>
+                    </div>
+
+                    <p id="statusDescription" class="text-sm text-slate-600 leading-relaxed mb-6">
+                        Kondisi perairan sangat mendukung kehidupan biota air dan ekosistem riparian. Parameter fisik dan kimia berada dalam batas optimal.
+                    </p>
+                </div>
+
+                <div class="pt-4 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
+                    <span>Petugas Pencatat:</span>
+                    <span id="recorderName" class="font-semibold text-slate-800">Tim Konservasi Unpad</span>
+                </div>
+            </div>
+
+            <!-- Grid 4 Parameter Utama -->
+            <div class="lg:col-span-8 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <!-- Parameter 1: pH -->
+                <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm hover:border-emerald-300 transition-colors">
+                    <div class="flex justify-between items-start mb-3">
+                        <div class="flex items-center gap-2.5">
+                            <div class="p-2.5 bg-blue-50 text-blue-600 rounded-xl">
+                                <i data-lucide="flask-conical" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold text-slate-800 text-sm">Derajat Keasaman (pH)</h3>
+                                <p class="text-xs text-slate-400">Baku Mutu: 6.0 - 9.0</p>
+                            </div>
+                        </div>
+                        <span id="phStatus" class="text-xs font-semibold px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-700">Normal</span>
+                    </div>
+                    <div class="flex items-baseline gap-2 mt-2">
+                        <span id="phValue" class="text-3xl font-bold text-slate-900">7.2</span>
+                        <span class="text-sm text-slate-500">pH</span>
+                    </div>
+                    <div class="w-full bg-slate-100 h-2 rounded-full mt-3 overflow-hidden">
+                        <div id="phBar" class="bg-blue-500 h-full rounded-full transition-all duration-500" style="width: 51%"></div>
+                    </div>
+                </div>
+
+                <!-- Parameter 2: Dissolved Oxygen (DO) -->
+                <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm hover:border-emerald-300 transition-colors">
+                    <div class="flex justify-between items-start mb-3">
+                        <div class="flex items-center gap-2.5">
+                            <div class="p-2.5 bg-cyan-50 text-cyan-600 rounded-xl">
+                                <i data-lucide="wind" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold text-slate-800 text-sm">Oksigen Terlarut (DO)</h3>
+                                <p class="text-xs text-slate-400">Baku Mutu: &ge; 4.0 mg/L</p>
+                            </div>
+                        </div>
+                        <span id="doStatus" class="text-xs font-semibold px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-700">Optimal</span>
+                    </div>
+                    <div class="flex items-baseline gap-2 mt-2">
+                        <span id="doValue" class="text-3xl font-bold text-slate-900">6.8</span>
+                        <span class="text-sm text-slate-500">mg/L</span>
+                    </div>
+                    <div class="w-full bg-slate-100 h-2 rounded-full mt-3 overflow-hidden">
+                        <div id="doBar" class="bg-cyan-500 h-full rounded-full transition-all duration-500" style="width: 68%"></div>
+                    </div>
+                </div>
+
+                <!-- Parameter 3: Suhu Air -->
+                <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm hover:border-emerald-300 transition-colors">
+                    <div class="flex justify-between items-start mb-3">
+                        <div class="flex items-center gap-2.5">
+                            <div class="p-2.5 bg-amber-50 text-amber-600 rounded-xl">
+                                <i data-lucide="thermometer" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold text-slate-800 text-sm">Suhu Perairan</h3>
+                                <p class="text-xs text-slate-400">Normal: 22°C - 28°C</p>
+                            </div>
+                        </div>
+                        <span id="tempStatus" class="text-xs font-semibold px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-700">Normal</span>
+                    </div>
+                    <div class="flex items-baseline gap-2 mt-2">
+                        <span id="tempValue" class="text-3xl font-bold text-slate-900">24.5</span>
+                        <span class="text-sm text-slate-500">°C</span>
+                    </div>
+                    <div class="w-full bg-slate-100 h-2 rounded-full mt-3 overflow-hidden">
+                        <div id="tempBar" class="bg-amber-500 h-full rounded-full transition-all duration-500" style="width: 60%"></div>
+                    </div>
+                </div>
+
+                <!-- Parameter 4: Kekeruhan (Turbidity) & TDS -->
+                <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm hover:border-emerald-300 transition-colors">
+                    <div class="flex justify-between items-start mb-3">
+                        <div class="flex items-center gap-2.5">
+                            <div class="p-2.5 bg-teal-50 text-teal-600 rounded-xl">
+                                <i data-lucide="waves" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold text-slate-800 text-sm">Kekeruhan & TDS</h3>
+                                <p class="text-xs text-slate-400">Baku Mutu: &lt; 25 NTU</p>
+                            </div>
+                        </div>
+                        <span id="turbidityStatus" class="text-xs font-semibold px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-700">Jernih</span>
+                    </div>
+                    <div class="flex items-baseline justify-between mt-2">
+                        <div class="flex items-baseline gap-1.5">
+                            <span id="turbidityValue" class="text-3xl font-bold text-slate-900">12.4</span>
+                            <span class="text-sm text-slate-500">NTU</span>
+                        </div>
+                        <div class="text-right">
+                            <span class="text-xs text-slate-400 block">TDS</span>
+                            <span id="tdsValue" class="text-sm font-semibold text-slate-700">145 ppm</span>
+                        </div>
+                    </div>
+                    <div class="w-full bg-slate-100 h-2 rounded-full mt-3 overflow-hidden">
+                        <div id="turbidityBar" class="bg-teal-500 h-full rounded-full transition-all duration-500" style="width: 25%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Grafik Tren & Catatan Lapangan -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            <!-- Grafik Tren -->
+            <div class="lg:col-span-8 bg-white rounded-2xl p-6 border border-slate-200 shadow-sm">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+                    <div>
+                        <h3 class="font-bold text-slate-900 text-lg">Grafik Tren Parameter Air</h3>
+                        <p class="text-xs text-slate-500">Riwayat pengukuran berkala pada stasiun terpilih</p>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="inline-flex items-center gap-1.5 text-xs font-medium text-slate-600 bg-slate-100 px-3 py-1.5 rounded-lg">
+                            <span class="w-2.5 h-2.5 rounded-full bg-blue-500"></span> pH
+                        </span>
+                        <span class="inline-flex items-center gap-1.5 text-xs font-medium text-slate-600 bg-slate-100 px-3 py-1.5 rounded-lg">
+                            <span class="w-2.5 h-2.5 rounded-full bg-cyan-500"></span> DO (mg/L)
+                        </span>
+                    </div>
+                </div>
+                <div class="relative h-64 sm:h-72 w-full">
+                    <canvas id="waterChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Catatan Observasi Lapangan -->
+            <div class="lg:col-span-4 bg-white rounded-2xl p-6 border border-slate-200 shadow-sm flex flex-col">
+                <h3 class="font-bold text-slate-900 text-lg mb-1">Observasi Lapangan</h3>
+                <p class="text-xs text-slate-500 mb-4">Catatan visual kondisi sekitar sungai</p>
+                
+                <div class="bg-slate-50 rounded-xl p-4 border border-slate-100 flex-grow space-y-3">
+                    <div class="flex items-center justify-between text-xs gap-2">
+                        <span class="text-slate-500">Cuaca Saat Pantau:</span>
+                        <span id="weatherValue" class="font-semibold text-slate-800 bg-white px-2.5 py-1 rounded-md border border-slate-200">Cerah Berawan</span>
+                    </div>
+                    <div class="flex items-center justify-between text-xs gap-2">
+                        <span class="text-slate-500">Kondisi Arus:</span>
+                        <span id="flowValue" class="font-semibold text-slate-800 bg-white px-2.5 py-1 rounded-md border border-slate-200">Tenang / Normal</span>
+                    </div>
+                    <div class="pt-2 border-t border-slate-200/70">
+                        <span class="text-xs text-slate-500 block mb-1.5">Catatan Petugas:</span>
+                        <p id="notesValue" class="text-sm text-slate-700 italic leading-relaxed">
+                            "Air terlihat jernih, vegetasi riparian di bantaran sungai tumbuh subur, ditemukan ikan-ikan kecil berenang di tepian."
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tabel Riwayat Pembaruan Data -->
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+            <div class="p-6 border-b border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                    <h3 class="font-bold text-slate-900 text-lg">Log Riwayat Pembaruan Data</h3>
+                    <p class="text-xs text-slate-500">Seluruh catatan pengukuran kualitas air dari semua stasiun di Ekoriparian Unpad</p>
+                </div>
+                <div class="flex flex-wrap items-center gap-2">
+                    <button onclick="openResetModal()" class="text-xs sm:text-sm font-medium text-slate-600 hover:text-rose-700 bg-slate-100 hover:bg-rose-50 px-3.5 py-2.5 rounded-xl flex items-center gap-2 transition-colors cursor-pointer">
+                        <i data-lucide="rotate-ccw" class="w-4 h-4"></i>
+                        <span>Reset Default</span>
+                    </button>
+                    <button onclick="exportCSV()" class="text-xs sm:text-sm font-medium text-emerald-700 hover:text-emerald-800 bg-emerald-50 hover:bg-emerald-100 px-3.5 py-2.5 rounded-xl flex items-center gap-2 transition-colors cursor-pointer">
+                        <i data-lucide="download" class="w-4 h-4"></i>
+                        <span>Unduh CSV</span>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="bg-slate-50 text-slate-500 text-xs uppercase tracking-wider border-b border-slate-200">
+                            <th class="py-3.5 px-4 font-semibold">Waktu</th>
+                            <th class="py-3.5 px-4 font-semibold">Titik Pantau</th>
+                            <th class="py-3.5 px-4 font-semibold">pH</th>
+                            <th class="py-3.5 px-4 font-semibold">DO (mg/L)</th>
+                            <th class="py-3.5 px-4 font-semibold">Suhu (°C)</th>
+                            <th class="py-3.5 px-4 font-semibold">Kekeruhan</th>
+                            <th class="py-3.5 px-4 font-semibold">Status IKA</th>
+                            <th class="py-3.5 px-4 font-semibold">Petugas</th>
+                        </tr>
+                    </thead>
+                    <tbody id="historyTableBody" class="divide-y divide-slate-100 text-sm">
+                        <!-- Baris data akan diisi via JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-slate-200 mt-12 py-6">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row justify-between items-center gap-4 text-xs text-slate-500 text-center sm:text-left">
+            <p>&copy; 2026 Pengelola Kawasan Ekoriparian Universitas Padjadjaran, Jatinangor. Data digunakan untuk riset, edukasi & konservasi lingkungan.</p>
+            <p>Baku Mutu mengacu pada PP No. 22 Tahun 2021 (Kelas II)</p>
+        </div>
+    </footer>
+
+    <!-- Modal Form Update Kualitas Air -->
+    <div id="updateModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4 overflow-y-auto">
+        <div class="bg-white rounded-2xl max-w-xl w-full shadow-xl border border-slate-200 overflow-hidden fade-in my-8">
+            <!-- Header Modal -->
+            <div class="px-6 py-4 bg-slate-50 border-b border-slate-200 flex justify-between items-center">
+                <div class="flex items-center gap-2.5">
+                    <div class="bg-emerald-100 text-emerald-700 p-2 rounded-lg">
+                        <i data-lucide="clipboard-edit" class="w-5 h-5"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-slate-900 text-base">Update Data Kualitas Air</h3>
+                        <p class="text-xs text-slate-500">Masukkan hasil pengukuran lapangan terbaru</p>
+                    </div>
+                </div>
+                <button onclick="closeModal()" class="text-slate-400 hover:text-slate-600 p-2 rounded-lg hover:bg-slate-200/50 transition-colors cursor-pointer" aria-label="Tutup modal">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <!-- Form Input -->
+            <form id="waterForm" onsubmit="handleFormSubmit(event)" class="p-6 space-y-4">
+                
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label for="inputStation" class="block text-xs font-semibold text-slate-700 mb-1.5">Titik Pantau (Stasiun) *</label>
+                        <select id="inputStation" required class="w-full border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 bg-white">
+                            <option value="Stasiun 1 - Hulu (Area Konservasi Unpad)">Stasiun 1 - Hulu (Area Konservasi Unpad)</option>
+                            <option value="Stasiun 2 - Tengah (Zona Edukasi & Fitoremediasi)">Stasiun 2 - Tengah (Zona Edukasi & Fitoremediasi)</option>
+                            <option value="Stasiun 3 - Hilir (Jembatan Cikeruh Jatinangor)">Stasiun 3 - Hilir (Jembatan Cikeruh Jatinangor)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="inputRecorder" class="block text-xs font-semibold text-slate-700 mb-1.5">Nama Petugas / Pengamat *</label>
+                        <input type="text" id="inputRecorder" required placeholder="Contoh: Tim Riset Unpad" class="w-full border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                    </div>
+                </div>
+
+                <!-- Parameter Angka -->
+                <div class="grid grid-cols-2 sm:grid-cols-3 gap-4 pt-2">
+                    <div>
+                        <label for="inputPh" class="block text-xs font-semibold text-slate-700 mb-1">pH Air (0-14) *</label>
+                        <input type="number" id="inputPh" step="0.1" min="0" max="14" required placeholder="7.2" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                    </div>
+                    <div>
+                        <label for="inputDo" class="block text-xs font-semibold text-slate-700 mb-1">DO (mg/L) *</label>
+                        <input type="number" id="inputDo" step="0.1" min="0" max="20" required placeholder="6.5" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                    </div>
+                    <div>
+                        <label for="inputTemp" class="block text-xs font-semibold text-slate-700 mb-1">Suhu (°C) *</label>
+                        <input type="number" id="inputTemp" step="0.1" min="0" max="50" required placeholder="24.5" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                    </div>
+                    <div>
+                        <label for="inputTurbidity" class="block text-xs font-semibold text-slate-700 mb-1">Kekeruhan (NTU) *</label>
+                        <input type="number" id="inputTurbidity" step="0.1" min="0" max="1000" required placeholder="12.0" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                    </div>
+                    <div>
+                        <label for="inputTds" class="block text-xs font-semibold text-slate-700 mb-1">TDS (ppm) *</label>
+                        <input type="number" id="inputTds" step="1" min="0" max="5000" required placeholder="140" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                    </div>
+                    <div>
+                        <label for="inputWeather" class="block text-xs font-semibold text-slate-700 mb-1">Cuaca</label>
+                        <select id="inputWeather" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 bg-white">
+                            <option value="Cerah">Cerah</option>
+                            <option value="Cerah Berawan">Cerah Berawan</option>
+                            <option value="Mendung">Mendung</option>
+                            <option value="Hujan Ringan">Hujan Ringan</option>
+                            <option value="Pasca Hujan Deras">Pasca Hujan Deras</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label for="inputFlow" class="block text-xs font-semibold text-slate-700 mb-1">Kondisi Arus Sungai</label>
+                    <select id="inputFlow" class="w-full border border-slate-300 rounded-xl px-3.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 bg-white">
+                        <option value="Tenang / Normal">Tenang / Normal</option>
+                        <option value="Deras (Debit Meningkat)">Deras (Debit Meningkat)</option>
+                        <option value="Lambat / Surut">Lambat / Surut</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label for="inputNotes" class="block text-xs font-semibold text-slate-700 mb-1">Catatan Observasi Visual</label>
+                    <textarea id="inputNotes" rows="2" placeholder="Tuliskan kondisi warna air, bau, keberadaan sampah, atau biota air yang terlihat..." class="w-full border border-slate-300 rounded-xl px-3.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"></textarea>
+                </div>
+
+                <!-- Tombol Submit -->
+                <div class="pt-3 border-t border-slate-100 flex justify-end gap-3">
+                    <button type="button" onclick="closeModal()" class="px-4 py-2.5 rounded-xl text-sm font-medium text-slate-600 hover:bg-slate-100 transition-colors cursor-pointer">
+                        Batal
+                    </button>
+                    <button type="submit" class="px-5 py-2.5 rounded-xl text-sm font-semibold text-white bg-emerald-600 hover:bg-emerald-700 shadow-sm transition-colors flex items-center gap-2 cursor-pointer">
+                        <i data-lucide="save" class="w-4 h-4"></i>
+                        <span>Simpan Pembaruan</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Konfirmasi Reset Data (Pengganti confirm()) -->
+    <div id="resetModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-md w-full shadow-xl border border-slate-200 overflow-hidden fade-in p-6 space-y-4">
+            <div class="flex items-center gap-3">
+                <div class="bg-rose-100 text-rose-600 p-2.5 rounded-xl shrink-0">
+                    <i data-lucide="alert-triangle" class="w-5 h-5"></i>
+                </div>
+                <div>
+                    <h3 class="font-bold text-slate-900 text-base">Kembalikan Data Awal?</h3>
+                    <p class="text-xs text-slate-500">Semua input tambahan lokal akan dihapus dan diganti dengan data simulasi awal.</p>
+                </div>
+            </div>
+            <div class="flex justify-end gap-3 pt-2">
+                <button type="button" onclick="closeResetModal()" class="px-4 py-2 rounded-xl text-sm font-medium text-slate-600 hover:bg-slate-100 transition-colors cursor-pointer">
+                    Batal
+                </button>
+                <button type="button" onclick="confirmResetData()" class="px-4 py-2 rounded-xl text-sm font-semibold text-white bg-rose-600 hover:bg-rose-700 transition-colors cursor-pointer">
+                    Ya, Reset Data
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notifikasi Toast (Pengganti alert()) -->
+    <div id="toast" class="fixed bottom-5 right-5 bg-slate-900 text-white px-4 py-3 rounded-xl shadow-lg flex items-center gap-3 transform translate-y-20 opacity-0 transition-all duration-300 z-50 pointer-events-none">
+        <div class="bg-emerald-500 p-1 rounded-full text-white">
+            <i data-lucide="check" class="w-4 h-4"></i>
+        </div>
+        <span id="toastMessage" class="text-sm font-medium">Data berhasil diperbarui!</span>
+    </div>
+
+    <script>
+        const STORAGE_KEY = "ekoriparian_unpad_water_records_v1";
+
+        // Data Awal (Mock Data Realistis untuk Ekoriparian Unpad Jatinangor)
+        const defaultWaterRecords = [
+            {
+                id: 1,
+                timestamp: "21 Nov 2026, 08:30",
+                station: "Stasiun 1 - Hulu (Area Konservasi Unpad)",
+                ph: 7.3,
+                do: 7.1,
+                temp: 23.8,
+                turbidity: 9.5,
+                tds: 128,
+                weather: "Cerah Berawan",
+                flow: "Tenang / Normal",
+                recorder: "Tim Konservasi Unpad",
+                notes: "Air jernih, vegetasi bambu dan tanaman air di sempadan sungai sangat rimbun. Banyak ditemukan capung dan ikan kecil."
+            },
+            {
+                id: 2,
+                timestamp: "20 Nov 2026, 15:00",
+                station: "Stasiun 1 - Hulu (Area Konservasi Unpad)",
+                ph: 7.2,
+                do: 6.9,
+                temp: 24.5,
+                turbidity: 11.2,
+                tds: 135,
+                weather: "Cerah",
+                flow: "Tenang / Normal",
+                recorder: "Rina Marlina (FPIK Unpad)",
+                notes: "Kondisi stabil, tidak ada bau menyengat di sekitar zona konservasi hulu."
+            },
+            {
+                id: 3,
+                timestamp: "19 Nov 2026, 09:15",
+                station: "Stasiun 1 - Hulu (Area Konservasi Unpad)",
+                ph: 7.1,
+                do: 6.8,
+                temp: 24.0,
+                turbidity: 14.0,
+                tds: 140,
+                weather: "Mendung",
+                flow: "Tenang / Normal",
+                recorder: "Tim Konservasi Unpad",
+                notes: "Sedikit serasah daun kering di permukaan air."
+            },
+            {
+                id: 4,
+                timestamp: "21 Nov 2026, 09:00",
+                station: "Stasiun 2 - Tengah (Zona Edukasi & Fitoremediasi)",
+                ph: 7.0,
+                do: 6.2,
+                temp: 24.9,
+                turbidity: 16.5,
+                tds: 168,
+                weather: "Cerah Berawan",
+                flow: "Tenang / Normal",
+                recorder: "Ahmad Fauzi (FTIP Unpad)",
+                notes: "Air cukup jernih, tanaman eceng gondok dan akar wangi pada kolam fitoremediasi tumbuh sehat."
+            },
+            {
+                id: 5,
+                timestamp: "20 Nov 2026, 15:30",
+                station: "Stasiun 2 - Tengah (Zona Edukasi & Fitoremediasi)",
+                ph: 6.9,
+                do: 6.0,
+                temp: 25.4,
+                turbidity: 18.0,
+                tds: 175,
+                weather: "Cerah",
+                flow: "Tenang / Normal",
+                recorder: "Ahmad Fauzi (FTIP Unpad)",
+                notes: "Kondisi aman, instalasi fitoremediasi berfungsi optimal menyaring sedimen."
+            },
+            {
+                id: 6,
+                timestamp: "21 Nov 2026, 09:30",
+                station: "Stasiun 3 - Hilir (Jembatan Cikeruh Jatinangor)",
+                ph: 6.6,
+                do: 4.8,
+                temp: 26.2,
+                turbidity: 28.4,
+                tds: 245,
+                weather: "Cerah Berawan",
+                flow: "Lambat / Surut",
+                recorder: "Dedi Kurniawan",
+                notes: "Kekeruhan sedikit meningkat akibat limpasan saluran drainase jalan raya di sekitar jembatan."
+            }
+        ];
+
+        // Muat data dari localStorage jika tersedia
+        function loadRecords() {
+            try {
+                const saved = localStorage.getItem(STORAGE_KEY);
+                if (saved) {
+                    const parsed = JSON.parse(saved);
+                    if (Array.isArray(parsed) && parsed.length > 0) {
+                        return parsed;
+                    }
+                }
+            } catch (err) {
+                console.error("Gagal membaca localStorage:", err);
+            }
+            return JSON.parse(JSON.stringify(defaultWaterRecords));
+        }
+
+        function saveRecords() {
+            try {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(waterRecords));
+            } catch (err) {
+                console.error("Gagal menyimpan ke localStorage:", err);
+            }
+        }
+
+        let waterRecords = loadRecords();
+        let chartInstance = null;
+
+        // Evaluasi Indeks Kualitas Air (IKA) dan status mutu
+        function evaluateWaterQuality(ph, doVal, temp, turbidity) {
+            let score = 100;
+
+            // Penalti pH (Ideal 6.5 - 8.5, Baku mutu 6.0 - 9.0)
+            if (ph < 6.0 || ph > 9.0) score -= 30;
+            else if (ph < 6.5 || ph > 8.5) score -= 10;
+
+            // Penalti DO (Ideal >= 6.0 mg/L, Baku mutu >= 4.0)
+            if (doVal < 3.0) score -= 35;
+            else if (doVal < 4.0) score -= 20;
+            else if (doVal < 6.0) score -= 8;
+
+            // Penalti Kekeruhan (Ideal < 15 NTU, Baku mutu < 25 NTU)
+            if (turbidity > 50) score -= 30;
+            else if (turbidity > 25) score -= 18;
+            else if (turbidity > 15) score -= 5;
+
+            // Penalti Suhu (Ideal 22 - 27 C)
+            if (temp > 30 || temp < 18) score -= 15;
+            else if (temp > 27) score -= 5;
+
+            score = Math.max(0, Math.min(100, score));
+
+            if (score >= 80) {
+                return {
+                    score: score.toFixed(1),
+                    label: "BAIK (Memenuhi Baku Mutu)",
+                    badgeClass: "bg-emerald-100 text-emerald-800",
+                    desc: "Kondisi perairan sangat mendukung kehidupan biota air dan ekosistem riparian Unpad. Parameter fisik dan kimia berada dalam batas optimal."
+                };
+            } else if (score >= 60) {
+                return {
+                    score: score.toFixed(1),
+                    label: "CUKUP BAIK (Waspada Ringan)",
+                    badgeClass: "bg-amber-100 text-amber-800",
+                    desc: "Beberapa parameter mulai mendekati batas baku mutu, namun ekosistem masih terjaga. Disarankan pemantauan berkala terhadap limpasan drainase."
+                };
+            } else {
+                return {
+                    score: score.toFixed(1),
+                    label: "TERCEMAR RINGAN / PERLU TINDAKAN",
+                    badgeClass: "bg-rose-100 text-rose-800",
+                    desc: "Kualitas air berada di bawah baku mutu PP No. 22 Tahun 2021 (Kelas II). Diperlukan penelusuran sumber pencemar di segmen sungai terkait."
+                };
+            }
+        }
+
+        // Badge status tiap parameter
+        function getPhBadge(ph) {
+            if (ph >= 6.0 && ph <= 9.0) return { text: "Normal", cls: "bg-emerald-50 text-emerald-700" };
+            return { text: "Di Luar Batas", cls: "bg-rose-50 text-rose-700" };
+        }
+
+        function getDoBadge(doVal) {
+            if (doVal >= 6.0) return { text: "Optimal", cls: "bg-emerald-50 text-emerald-700" };
+            if (doVal >= 4.0) return { text: "Cukup", cls: "bg-amber-50 text-amber-700" };
+            return { text: "Rendah", cls: "bg-rose-50 text-rose-700" };
+        }
+
+        function getTempBadge(temp) {
+            if (temp >= 22 && temp <= 28) return { text: "Normal", cls: "bg-emerald-50 text-emerald-700" };
+            return { text: "Perlu Perhatian", cls: "bg-amber-50 text-amber-700" };
+        }
+
+        function getTurbidityBadge(turbidity) {
+            if (turbidity < 15) return { text: "Jernih", cls: "bg-emerald-50 text-emerald-700" };
+            if (turbidity <= 25) return { text: "Sedang", cls: "bg-amber-50 text-amber-700" };
+            return { text: "Keruh", cls: "bg-rose-50 text-rose-700" };
+        }
+
+        function getLatestRecordForStation(stationName) {
+            return waterRecords.find(r => r.station === stationName) || waterRecords[0];
+        }
+
+        // Render keseluruhan dashboard
+        function renderDashboard() {
+            const selectedStation = document.getElementById("stationFilter").value;
+            const latest = getLatestRecordForStation(selectedStation);
+            const evalResult = evaluateWaterQuality(latest.ph, latest.do, latest.temp, latest.turbidity);
+
+            // Header waktu & petugas
+            document.getElementById("lastUpdatedText").innerHTML = `
+                <i data-lucide="clock" class="w-3.5 h-3.5"></i>
+                <span>Diperbarui: ${latest.timestamp}</span>
+            `;
+            document.getElementById("recorderName").textContent = latest.recorder;
+
+            // Kartu Status IKA
+            document.getElementById("ikaScore").textContent = evalResult.score;
+            document.getElementById("statusDescription").textContent = evalResult.desc;
+            const statusBadge = document.getElementById("statusBadge");
+            statusBadge.textContent = evalResult.label;
+            statusBadge.className = `px-3 py-1 rounded-full text-xs font-bold ${evalResult.badgeClass}`;
+
+            // Parameter 1: pH
+            document.getElementById("phValue").textContent = Number(latest.ph).toFixed(1);
+            const phBadge = getPhBadge(latest.ph);
+            const phStatusEl = document.getElementById("phStatus");
+            phStatusEl.textContent = phBadge.text;
+            phStatusEl.className = `text-xs font-semibold px-2.5 py-1 rounded-lg ${phBadge.cls}`;
+            document.getElementById("phBar").style.width = `${Math.max(0, Math.min(100, (latest.ph / 14) * 100))}%`;
+
+            // Parameter 2: DO
+            document.getElementById("doValue").textContent = Number(latest.do).toFixed(1);
+            const doBadge = getDoBadge(latest.do);
+            const doStatusEl = document.getElementById("doStatus");
+            doStatusEl.textContent = doBadge.text;
+            doStatusEl.className = `text-xs font-semibold px-2.5 py-1 rounded-lg ${doBadge.cls}`;
+            document.getElementById("doBar").style.width = `${Math.max(0, Math.min(100, (latest.do / 12) * 100))}%`;
+
+            // Parameter 3: Suhu
+            document.getElementById("tempValue").textContent = Number(latest.temp).toFixed(1);
+            const tempBadge = getTempBadge(latest.temp);
+            const tempStatusEl = document.getElementById("tempStatus");
+            tempStatusEl.textContent = tempBadge.text;
+            tempStatusEl.className = `text-xs font-semibold px-2.5 py-1 rounded-lg ${tempBadge.cls}`;
+            document.getElementById("tempBar").style.width = `${Math.max(0, Math.min(100, (latest.temp / 40) * 100))}%`;
+
+            // Parameter 4: Kekeruhan & TDS
+            document.getElementById("turbidityValue").textContent = Number(latest.turbidity).toFixed(1);
+            document.getElementById("tdsValue").textContent = `${latest.tds} ppm`;
+            const turbBadge = getTurbidityBadge(latest.turbidity);
+            const turbStatusEl = document.getElementById("turbidityStatus");
+            turbStatusEl.textContent = turbBadge.text;
+            turbStatusEl.className = `text-xs font-semibold px-2.5 py-1 rounded-lg ${turbBadge.cls}`;
+            document.getElementById("turbidityBar").style.width = `${Math.max(0, Math.min(100, (latest.turbidity / 50) * 100))}%`;
+
+            // Observasi lapangan
+            document.getElementById("weatherValue").textContent = latest.weather;
+            document.getElementById("flowValue").textContent = latest.flow;
+            document.getElementById("notesValue").textContent = latest.notes
+                ? `"${latest.notes}"`
+                : `"Tidak ada catatan tambahan pada pengukuran ini."`;
+
+            renderChart(selectedStation);
+            renderHistoryTable();
+            lucide.createIcons();
+        }
+
+        // Grafik Tren Parameter (pH & DO)
+        function renderChart(stationName) {
+            const stationRecords = waterRecords
+                .filter(r => r.station === stationName)
+                .slice()
+                .reverse();
+
+            const labels = stationRecords.map(r => r.timestamp);
+            const phData = stationRecords.map(r => Number(r.ph));
+            const doData = stationRecords.map(r => Number(r.do));
+
+            const ctx = document.getElementById("waterChart").getContext("2d");
+            if (chartInstance) {
+                chartInstance.destroy();
+            }
+
+            chartInstance = new Chart(ctx, {
+                type: "line",
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: "pH",
+                            data: phData,
+                            borderColor: "#3b82f6",
+                            backgroundColor: "rgba(59, 130, 246, 0.12)",
+                            tension: 0.35,
+                            fill: true,
+                            pointRadius: 4,
+                            pointHoverRadius: 6
+                        },
+                        {
+                            label: "DO (mg/L)",
+                            data: doData,
+                            borderColor: "#06b6d4",
+                            backgroundColor: "rgba(6, 182, 212, 0.12)",
+                            tension: 0.35,
+                            fill: true,
+                            pointRadius: 4,
+                            pointHoverRadius: 6
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: {
+                        mode: "index",
+                        intersect: false
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            suggestedMin: 0,
+                            suggestedMax: 10,
+                            grid: {
+                                color: "#f1f5f9"
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                maxRotation: 25,
+                                autoSkip: true,
+                                maxTicksLimit: 6
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Render Tabel Riwayat
+        function renderHistoryTable() {
+            const tbody = document.getElementById("historyTableBody");
+            tbody.innerHTML = "";
+
+            waterRecords.forEach(record => {
+                const evalRes = evaluateWaterQuality(record.ph, record.do, record.temp, record.turbidity);
+                const tr = document.createElement("tr");
+                tr.className = "hover:bg-slate-50/80 transition-colors";
+                tr.innerHTML = `
+                    <td class="py-3.5 px-4 text-slate-600 whitespace-nowrap">${record.timestamp}</td>
+                    <td class="py-3.5 px-4 font-medium text-slate-800">${record.station}</td>
+                    <td class="py-3.5 px-4 text-slate-700">${Number(record.ph).toFixed(1)}</td>
+                    <td class="py-3.5 px-4 text-slate-700">${Number(record.do).toFixed(1)}</td>
+                    <td class="py-3.5 px-4 text-slate-700">${Number(record.temp).toFixed(1)}</td>
+                    <td class="py-3.5 px-4 text-slate-700">${Number(record.turbidity).toFixed(1)} NTU</td>
+                    <td class="py-3.5 px-4 whitespace-nowrap">
+                        <span class="px-2.5 py-1 rounded-full text-xs font-semibold ${evalRes.badgeClass}">
+                            ${evalRes.score} · ${evalRes.label.split(" ")[0]}
+                        </span>
+                    </td>
+                    <td class="py-3.5 px-4 text-slate-600 whitespace-nowrap">${record.recorder}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function handleStationChange() {
+            renderDashboard();
+        }
+
+        // Kontrol Modal Update Data
+        function openModal() {
+            const currentStation = document.getElementById("stationFilter").value;
+            document.getElementById("inputStation").value = currentStation;
+            document.getElementById("updateModal").classList.remove("hidden");
+            lucide.createIcons();
+        }
+
+        function closeModal() {
+            document.getElementById("updateModal").classList.add("hidden");
+            document.getElementById("waterForm").reset();
+        }
+
+        // Kontrol Modal Reset Data
+        function openResetModal() {
+            document.getElementById("resetModal").classList.remove("hidden");
+            lucide.createIcons();
+        }
+
+        function closeResetModal() {
+            document.getElementById("resetModal").classList.add("hidden");
+        }
+
+        function confirmResetData() {
+            waterRecords = JSON.parse(JSON.stringify(defaultWaterRecords));
+            saveRecords();
+            closeResetModal();
+            renderDashboard();
+            showToast("Data berhasil dikembalikan ke kondisi awal.");
+        }
+
+        // Format waktu Indonesia
+        function formatNowIndonesian() {
+            const now = new Date();
+            const months = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agt", "Sep", "Okt", "Nov", "Des"];
+            const day = String(now.getDate()).padStart(2, "0");
+            const month = months[now.getMonth()];
+            const year = now.getFullYear();
+            const hours = String(now.getHours()).padStart(2, "0");
+            const minutes = String(now.getMinutes()).padStart(2, "0");
+            return `${day} ${month} ${year}, ${hours}:${minutes}`;
+        }
+
+        // Submit Form Pembaruan Data
+        function handleFormSubmit(event) {
+            event.preventDefault();
+
+            const station = document.getElementById("inputStation").value;
+            const recorder = document.getElementById("inputRecorder").value.trim();
+            const ph = parseFloat(document.getElementById("inputPh").value);
+            const doVal = parseFloat(document.getElementById("inputDo").value);
+            const temp = parseFloat(document.getElementById("inputTemp").value);
+            const turbidity = parseFloat(document.getElementById("inputTurbidity").value);
+            const tds = parseInt(document.getElementById("inputTds").value, 10);
+            const weather = document.getElementById("inputWeather").value;
+            const flow = document.getElementById("inputFlow").value;
+            const notes = document.getElementById("inputNotes").value.trim();
+
+            const newRecord = {
+                id: Date.now(),
+                timestamp: formatNowIndonesian(),
+                station,
+                ph,
+                do: doVal,
+                temp,
+                turbidity,
+                tds,
+                weather,
+                flow,
+                recorder,
+                notes
+            };
+
+            waterRecords.unshift(newRecord);
+            saveRecords();
+            document.getElementById("stationFilter").value = station;
+
+            closeModal();
+            renderDashboard();
+            showToast(`Data ${station} berhasil disimpan!`);
+        }
+
+        // Toast Notifikasi
+        let toastTimeout = null;
+        function showToast(message) {
+            const toast = document.getElementById("toast");
+            document.getElementById("toastMessage").textContent = message;
+
+            toast.classList.remove("translate-y-20", "opacity-0");
+            toast.classList.add("translate-y-0", "opacity-100");
+
+            clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => {
+                toast.classList.remove("translate-y-0", "opacity-100");
+                toast.classList.add("translate-y-20", "opacity-0");
+            }, 3000);
+        }
+
+        // Ekspor CSV
+        function exportCSV() {
+            const headers = [
+                "Waktu",
+                "Titik Pantau",
+                "pH",
+                "DO (mg/L)",
+                "Suhu (C)",
+                "Kekeruhan (NTU)",
+                "TDS (ppm)",
+                "Cuaca",
+                "Kondisi Arus",
+                "Petugas",
+                "Catatan"
+            ];
+
+            const rows = waterRecords.map(r => [
+                r.timestamp,
+                r.station,
+                r.ph,
+                r.do,
+                r.temp,
+                r.turbidity,
+                r.tds,
+                r.weather,
+                r.flow,
+                r.recorder,
+                r.notes || ""
+            ]);
+
+            const csvContent = [headers, ...rows]
+                .map(row => row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(","))
+                .join("\n");
+
+            const blob = new Blob(["\uFEFF" + csvContent], { type: "text/csv;charset=utf-8;" });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            link.href = url;
+            link.download = "kualitas-air-ekoriparian-unpad-jatinangor.csv";
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+
+            showToast("File CSV berhasil diunduh.");
+        }
+
+        // Tutup modal saat klik area backdrop
+        document.getElementById("updateModal").addEventListener("click", function (e) {
+            if (e.target === this) closeModal();
+        });
+        document.getElementById("resetModal").addEventListener("click", function (e) {
+            if (e.target === this) closeResetModal();
+        });
+
+        // Inisialisasi awal
+        window.onload = function () {
+            renderDashboard();
+        };
+    </script>
+</body>
+</html&g
